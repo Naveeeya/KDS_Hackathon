@@ -46,7 +46,10 @@ class DossierGenerator:
         self.dimension_descriptions = {
             "violence": "Attitudes and behaviors related to violence, conflict, and physical confrontation",
             "authority": "Relationship with authority figures, rules, and leadership",
-            "trust": "Patterns of trust, loyalty, betrayal, and interpersonal bonds"
+            "trust": "Patterns of trust, loyalty, betrayal, and interpersonal bonds",
+            "courage": "Displays of bravery, handling of fear, and willingness to face danger",
+            "loyalty": "Devotion to friends, willingness to protect others, and faithfulness",
+            "morality": "Sense of right and wrong, ethical decisions, and moral compass"
         }
     
     def extract_backstory_claims(self, backstory_text: str) -> List[Dict[str, Any]]:
@@ -63,7 +66,10 @@ class DossierGenerator:
         dimension_keywords = {
             "violence": ["violence", "fight", "attack", "conflict", "battle", "harm", "hurt", "defend"],
             "authority": ["authority", "leader", "rule", "obey", "defy", "command", "order", "follow"],
-            "trust": ["trust", "betray", "rely", "bond", "distrust", "loyal", "friend", "faith"]
+            "trust": ["trust", "betray", "rely", "bond", "distrust", "loyal", "friend", "faith"],
+            "courage": ["brave", "courage", "fear", "scared", "bold", "coward", "hero", "danger"],
+            "loyalty": ["loyal", "betray", "abandon", "protect", "defend", "sacrifice", "devoted"],
+            "morality": ["right", "wrong", "evil", "good", "dark", "innocent", "guilt", "justice"]
         }
         
         negatives = ['never', 'not', 'no', 'without', 'avoided', 'refused', 'questioned', 
@@ -117,7 +123,10 @@ class DossierGenerator:
         dimension_keywords = {
             "violence": ["violence", "fight", "attack", "conflict", "battle", "harm", "defend"],
             "authority": ["authority", "leader", "rule", "obey", "defy", "command"],
-            "trust": ["trust", "betray", "rely", "bond", "distrust", "loyal", "friend"]
+            "trust": ["trust", "betray", "rely", "bond", "distrust", "loyal", "friend"],
+            "courage": ["brave", "courage", "fear", "scared", "bold", "coward", "hero"],
+            "loyalty": ["loyal", "betray", "abandon", "protect", "defend", "sacrifice"],
+            "morality": ["right", "wrong", "evil", "good", "dark", "innocent", "guilt"]
         }
         
         negatives = ['never', 'not', 'no', 'without', 'avoided', 'refused', 'questioned',
@@ -232,7 +241,7 @@ class DossierGenerator:
         
         # Group by dimension
         dimension_analysis = {}
-        for dim in ["violence", "authority", "trust"]:
+        for dim in ["violence", "authority", "trust", "courage", "loyalty", "morality"]:
             dim_links = [l for l in evidence_links if l.dimension == dim]
             
             if dim_links:

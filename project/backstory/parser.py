@@ -12,9 +12,12 @@ class BackstoryParser:
     def __init__(self):
         # Dimension keywords
         self.dimension_keywords = {
-            "violence": ["violence", "fight", "attack", "conflict", "battle"],
-            "authority": ["authority", "leader", "rule", "obey", "defy"],
-            "trust": ["trust", "betray", "rely", "bond", "distrust"]
+            "violence": ["violence", "fight", "attack", "conflict", "battle", "hurt", "harm"],
+            "authority": ["authority", "leader", "rule", "obey", "defy", "order", "command"],
+            "trust": ["trust", "betray", "rely", "bond", "distrust", "friend", "loyal"],
+            "courage": ["brave", "courage", "fear", "scared", "bold", "coward", "hero"],
+            "loyalty": ["loyal", "betray", "abandon", "protect", "defend", "sacrifice"],
+            "morality": ["right", "wrong", "evil", "good", "dark", "innocent", "guilt"]
         }
         # Negative indicators
         self.negatives = ['never', 'not', 'no', 'without', 'avoided', 'refused', 'questioned', 'distrusted', 'defied', 'rebelled', 'kept to himself']

@@ -1,2 +1,2 @@
 prediction,decision,reason,trigger_summary,checked_dimensions,conflict_dimensions,conflict_details,total_excerpts,total_claims,total_evidence_links
-1,consistent,No conflicting constraints were found between story and backstory.,,violence,,,141,2,170
+0,inconsistent,One or more constraint conflicts exceeded severity thresholds.,4 conflicts detected.,,morality;courage;violence;trust,Story morality: positive (1.0) | Backstory morality: negative (0.5) || Story courage: negative (1.0) | Backstory courage: positive (0.5) || Story violence: positive (1.0) | Backstory violence: negative (0.5) || Story trust: positive (1.0) | Backstory trust: negative (0.6),1053,6,450

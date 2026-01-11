@@ -12,9 +12,12 @@ class ExperienceDetector:
     def __init__(self):
         # Dimension keywords for detection
         self.dimension_keywords = {
-            "violence": ["violence", "fight", "attack", "conflict", "battle"],
-            "authority": ["authority", "leader", "rule", "obey", "defy"],
-            "trust": ["trust", "betray", "rely", "bond", "distrust"]
+            "violence": ["violence", "fight", "attack", "conflict", "battle", "hurt", "harm", "strike", "hit", "punch", "curse", "hex"],
+            "authority": ["authority", "leader", "rule", "obey", "defy", "order", "command", "professor", "ministry", "headmaster"],
+            "trust": ["trust", "betray", "rely", "bond", "distrust", "friend", "loyal", "faith", "believe"],
+            "courage": ["brave", "courage", "fear", "scared", "terrified", "bold", "coward", "hero", "danger", "risk"],
+            "loyalty": ["loyal", "betray", "abandon", "protect", "defend", "sacrifice", "devoted", "faithful"],
+            "morality": ["right", "wrong", "evil", "good", "dark", "light", "innocent", "guilt", "justice", "fair"]
         }
 
     def extract_experiences(self, text_chunk: str, chapter_id: int) -> List[Experience]:
