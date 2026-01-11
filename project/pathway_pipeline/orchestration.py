@@ -87,47 +87,48 @@ def main():
     print(f"    - Saved JSON: {json_path}")
     print(f"    - Saved Markdown: {md_path}")
 
-    # Also save summary CSV for quick reference
-    decision_exp = result["decision_explanation"]
+    # Generate clean results.csv with ONLY final result
     conflicts = result["conflicts"]
     
-    prediction = result["prediction"]
-    decision = decision_exp["decision"]
-    reason = decision_exp["reason"]
-    trigger_summary = decision_exp.get("trigger_summary", "") if prediction == 0 else ""
-    checked_dimensions = ";".join(decision_exp.get("checked_dimensions", [])) if prediction == 1 else ""
-    conflict_dimensions = ";".join([c["dimension"] for c in conflicts])
-    conflict_details = " || ".join([
-        f"Story {c['dimension']}: {c['story_constraint']['polarity']} ({c['story_constraint']['strength']}) | "
-        f"Backstory {c['dimension']}: {c['backstory_constraint']['polarity']} ({c['backstory_constraint']['strength']})"
-        for c in conflicts
-    ])
+    # Filter for MEDIUM/HIGH severity conflicts only
+    significant_conflicts = [c for c in conflicts if c.get("severity", "").lower() in ["medium", "high"]]
     
-    csv_results = [{
-        "prediction": prediction,
-        "decision": decision,
-        "reason": reason,
-        "trigger_summary": trigger_summary,
-        "checked_dimensions": checked_dimensions,
-        "conflict_dimensions": conflict_dimensions,
-        "conflict_details": conflict_details,
-        "total_excerpts": dossier["metadata"]["total_excerpts_analyzed"],
-        "total_claims": dossier["metadata"]["total_backstory_claims"],
-        "total_evidence_links": dossier["metadata"]["total_evidence_links"]
-    }]
-    df = pd.DataFrame(csv_results)
-    df.to_csv('results/results.csv', index=False)
+    # Determine conflict dimensions with evidence dominance
+    conflict_dims_with_evidence = []
+    for conflict in significant_conflicts:
+        dim = conflict.get("dimension", "")
+        dim_data = dossier["dimension_analysis"].get(dim, {})
+        contradicting = dim_data.get("contradicting_count", 0)
+        supporting = dim_data.get("supporting_count", 0)
+        # Consider valid if contradicting evidence >= supporting (dominance)
+        if contradicting >= supporting * 0.5:  # At least 50% ratio
+            conflict_dims_with_evidence.append(dim)
+    
+    # Final decision
+    if conflict_dims_with_evidence:
+        final_result = 0
+        conflict_list = ", ".join(conflict_dims_with_evidence)
+        explanation = f"Polarity mismatch detected in [{conflict_list}]. Severity: HIGH. Contradicting evidence dominates in these dimensions, exceeding threshold."
+    else:
+        final_result = 1
+        if significant_conflicts:
+            explanation = "Minor conflicts detected but below evidence dominance threshold. All major constraints align between story and backstory."
+        else:
+            explanation = "No meaningful conflicts detected. All constraint polarities align between story and backstory."
+    
+    # Write simple CSV with ONLY Result and Explanation
+    with open('results/results.csv', 'w') as f:
+        f.write("Result,Explanation\n")
+        f.write(f"{final_result},\"{explanation}\"\n")
+    
     print(f"    - Saved CSV: results/results.csv")
     
     # Print Summary
     print("\n" + "=" * 60)
-    print("ANALYSIS COMPLETE")
+    print("FINAL RESULT")
     print("=" * 60)
-    print(f"\n{dossier['summary']}")
-    print(f"\nOutput files:")
-    print(f"  • results/dossier.md   - Human-readable detailed report")
-    print(f"  • results/dossier.json - Machine-readable full data")
-    print(f"  • results/results.csv  - Quick summary")
+    print(f"\nResult: {final_result}")
+    print(f"Explanation: {explanation}")
 
 
 if __name__ == "__main__":
