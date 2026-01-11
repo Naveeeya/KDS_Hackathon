@@ -1,2 +1,2 @@
-prediction,decision,reason,trigger_summary,checked_dimensions,conflict_dimensions,conflict_details
-1,consistent,No conflicting constraints were found between story and backstory.,,violence,,
+prediction,decision,reason,trigger_summary,checked_dimensions,conflict_dimensions,conflict_details,total_excerpts,total_claims,total_evidence_links
+1,consistent,No conflicting constraints were found between story and backstory.,,violence,,,141,2,170

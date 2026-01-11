@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-11T15:14:34.029456",
+    "total_excerpts_analyzed": 141,
+    "total_backstory_claims": 2,
+    "total_evidence_links": 170
+  },
+  "prediction": {
+    "value": 1,
+    "decision": "consistent",
+    "reason": "No conflicting constraints were found between story and backstory."
+  },
+  "backstory_claims": [
+    {
+      "claim_id": "068af698",
+      "text": "He grew up enjoying violence.",
+      "dimension": "violence",
+      "polarity": "positive"
+    },
+    {
+      "claim_id": "e6867988",
+      "text": "He believed fighting was the solution to problems.",
+      "dimension": "violence",
+      "polarity": "positive"
+    }
+  ],
+  "dimension_analysis": {
+    "violence": {
+      "description": "Attitudes and behaviors related to violence, conflict, and physical confrontation",
+      "story_polarity": "positive",
+      "backstory_polarity": "positive",
+      "total_excerpts": 170,
+      "supporting_count": 92,
+      "contradicting_count": 78,
+      "is_conflict": true,
+      "evidence_links": [
+        {
+          "excerpt_id": "f63355ce",
+          "excerpt_text": "Harry's parents had\ndied in Voldemort's attack, but Harry had escaped with his lightning\nscar, and somehow - nobody understood why Voldemort's powers had\nbeen destroyed the instant he had failed to kill Harry.",
+          "chapter": 1,
+          "backstory_claim": "He grew up enjoying violence.",
+          "relationship": "contradicts",
+          "analysis": "CONFLICT DETECTED: The excerpt shows negative violence behavior, but the backstory indicates positive violence. This represents a fundamental inconsistency between the character's stated history and their behavior in the narrative.",
+          "confidence": 0.52
+        },
+        {
+          "excerpt_id": "f63355ce",
+          "excerpt_text": "Harry's parents had\ndied in Voldemort's attack, but Harry had escaped with his lightning\nscar, and somehow - nobody understood why Voldemort's powers had\nbeen destroyed the instant he had failed to kill Harry.",
+          "chapter": 1,
+          "backstory_claim": "He believed fighting was the solution to problems.",
+          "relationship": "contradicts",
+          "analysis": "CONFLICT DETECTED: The excerpt shows negative violence behavior, but the backstory indicates positive violence. This represents a fundamental inconsistency between the character's stated history and their behavior in the narrative.",
+          "confidence": 0.55
+        },
+        {
+          "excerpt_id": "4518b56a",
+          "excerpt_text": "He was\nasking that bloke from the Daily Prophet if he'd be able to work the fight into\nhis report - said it was all publicity -\"\nBut it was a subdued group that headed back to the fireside in the Leaky\nCauldron, where Harry, the Weasleys, and all their shopping would be\ntraveling back to the Burrow using Floo powder.",
+          "chapter": 1,
+          "backstory_claim": "He grew up enjoying violence.",
+          "relationship": "supports",
+          "analysis": "This excerpt demonstrates positive violence behavior that aligns with the backstory claim. The narrative evidence shows consistency in the character's established patterns regarding violence.",
+          "confidence": 0.51
+        },
+        {
+          "excerpt_id": "4518b56a",
+          "excerpt_text": "He was\nasking that bloke from the Daily Prophet if he'd be able to work the fight into\nhis report - said it was all publicity -\"\nBut it was a subdued group that headed back to the fireside in the Leaky\nCauldron, where Harry, the Weasleys, and all their shopping would be\ntraveling back to the Burrow using Floo powder.",
+          "chapter": 1,
+          "backstory_claim": "He believed fighting was the solution to problems.",
+          "relationship": "supports",
+          "analysis": "This excerpt demonstrates positive violence behavior that aligns with the backstory claim. The narrative evidence shows consistency in the character's established patterns regarding violence.",
+          "confidence": 0.54
+        },
+        {
+          "excerpt_id": "166f1a60",
+          "excerpt_text": "The tree\nthey had hit was attacking them.",
+          "chapter": 1,
+          "backstory_claim": "He grew up enjoying violence.",
+          "relationship": "supports",
+          "analysis": "This excerpt demonstrates positive violence behavior that aligns with the backstory claim. The narrative evidence shows consistency in the character's established patterns regarding violence.",
+          "confidence": 0.5
+        },
+        {
+          "excerpt_id": "166f1a60",
+          "excerpt_text": "The tree\nthey had hit was attacking them.",
+          "chapter": 1,
+          "backstory_claim": "He believed fighting was the solution to problems.",
+          "relationship": "supports",
+          "analysis": "This excerpt demonstrates positive violence behavior that aligns with the backstory claim. The narrative evidence shows consistency in the character's established patterns regarding violence.",
+          "confidence": 0.62
+        },
+        {
+          "excerpt_id": "86a94e23",
+          "excerpt_text": "Hedwig was still angry with Harry about the disasterous car journey\nand Ron's wand was still malfunctioning, surpassing itself on Friday\nmorning by shooting out of Ron's hand in Charms and hitting tiny old\nProfessor Flitwick squarely between the eyes, creating a large,\nthrobbing green boil where it had struck.",
+          "chapter": 1,
+          "backstory_claim": "He grew up enjoying violence.",
+          "relationship": "supports",
+          "analysis": "This excerpt demonstrates positive violence behavior that aligns with the backstory claim. The narrative evidence shows consistency in the character's established patterns regarding violence.",
+          "confidence": 0.5
+        },
+        {
+          "excerpt_id": "86a94e23",
+          "excerpt_text": "Hedwig was still angry with Harry about the disasterous car journey\nand Ron's wand was still malfunctioning, surpassing itself on Friday\nmorning by shooting out of Ron's hand in Charms and hitting tiny old\nProfessor Flitwick squarely between the eyes, creating a large,\nthrobbing green boil where it had struck.",
+          "chapter": 1,
+          "backstory_claim": "He believed fighting was the solution to problems.",
+          "relationship": "supports",
+          "analysis": "This excerpt demonstrates positive violence behavior that aligns with the backstory claim. The narrative evidence shows consistency in the character's established patterns regarding violence.",
+          "confidence": 0.52
+        },
+        {
+          "excerpt_id": "28144292",
+          "excerpt_text": "He was pleased to see that his\nphotographic self was putting up a good fight and refusing to be\ndragged into view.",
+          "chapter": 1,
+          "backstory_claim": "He grew up enjoying violence.",
+          "relationship": "supports",
+          "analysis": "This excerpt demonstrates positive violence behavior that aligns with the backstory claim. The narrative evidence shows consistency in the character's established patterns regarding violence.",
+          "confidence": 0.55
+        },
+        {
+          "excerpt_id": "28144292",
+          "excerpt_text": "He was pleased to see that his\nphotographic self was putting up a good fight and refusing to be\ndragged into view.",
+          "chapter": 1,
+          "backstory_claim": "He believed fighting was the solution to problems.",
+          "relationship": "supports",
+          "analysis": "This excerpt demonstrates positive violence behavior that aligns with the backstory claim. The narrative evidence shows consistency in the character's established patterns regarding violence.",
+          "confidence": 0.57
+        }
+      ]
+    }
+  },
+  "conflicts": [],
+  "summary": "CONSISTENT: The backstory claims are supported by the narrative evidence. Analysis of 170 excerpt-claim linkages across 1 behavioral dimensions shows alignment between the character's stated history and their actions in the story."
+}
