@@ -1,0 +1,5 @@
+pathway==0.0.1  # Placeholder, use actual version
+openai  # For LLM extraction if needed
+pandas  # For results.csv
+pytest  # For testing
+pdfplumber  # For PDF text extraction
