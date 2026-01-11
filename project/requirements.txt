@@ -1,4 +1,4 @@
-pathway==0.0.1  # Placeholder, use actual version
+pathway>=0.2.0  # Pathway streaming data framework
 openai  # For LLM extraction if needed
 pandas  # For results.csv
 pytest  # For testing

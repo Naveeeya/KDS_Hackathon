@@ -1,2 +1,2 @@
 prediction,decision,reason,trigger_summary,checked_dimensions,conflict_dimensions,conflict_details
-0,inconsistent,One or more constraint conflicts exceeded severity thresholds.,1 conflicts detected.,,violence,Story violence: negative (0.30000000000000004) | Backstory violence: positive (0.6)
+1,consistent,No conflicting constraints were found between story and backstory.,,violence,,
