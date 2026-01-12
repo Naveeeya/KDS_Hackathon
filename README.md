@@ -21,7 +21,10 @@ This project uses a **Constraint-Based Reasoning System** enhanced with **Pathwa
 
 1.  **Pathway Integration**: Uses Pathway for efficient semantic retrieval of relevant novel passages.
 2.  **Constraint Logic**: Extracts character constraints (values, behaviors) from separate backstories and compares them against the novel's narrative evidence.
-3.  **Conflict Detection**: Identifies mismatches in 6 dimensions: violence, authority, trust, courage, loyalty, morality.
+3.  **Conflict Detection**: Identifies mismatches in
+    - **6 Behavioral Dimensions**: violence, authority, trust, courage, loyalty, morality
+    - **Polarity Detection**: NLTK VADER sentiment analysis for robust nuancing
+    - **Evidence Dominance**: Threshold-based conflict detection (0.3 ratio)
 
 ## Project Structure
 

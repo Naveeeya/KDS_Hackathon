@@ -84,14 +84,21 @@ def analyze_single(novel_text, backstory_text, character_name=""):
 
 def _format_rationale(result):
     if result['prediction'] == 1:
-        return "No meaningful conflicts. All constraint polarities align."
+        return "No meaningful conflicts. Behavior aligns with backstory constraints."
     
     conflicts = result['conflicts']
     if not conflicts:
-        return "No conflicts detected."
+        # Should not happen if prediction is 0, but fallback
+        return "Inconsistencies detected in general character tone."
         
-    dims = [c['dimension'] for c in conflicts]
-    return f"Conflict in [{', '.join(dims)}]"
+    # Join explanations for all conflicts
+    explanations = []
+    for c in conflicts:
+        dim = c['dimension']
+        explanation = c.get('explanation', f"Conflict in {dim}")
+        explanations.append(f"[{dim.upper()}]: {explanation}")
+        
+    return "; ".join(explanations)
 
 
 def main():

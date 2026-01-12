@@ -6,6 +6,8 @@ from constraints.schema import CharacterState, Experience, Constraint
 from typing import List
 
 
+from narrative.sentiment import SentimentAnalyzer
+
 class ConstraintUpdater:
     def __init__(self):
         # Dimension keywords
@@ -17,13 +19,7 @@ class ConstraintUpdater:
             "loyalty": ["loyal", "betray", "abandon", "protect", "defend", "sacrifice"],
             "morality": ["right", "wrong", "evil", "good", "dark", "innocent", "guilt"]
         }
-        # Polarity keywords
-        self.negative_keywords = ['avoided', 'refused', 'questioned', 'distrusted', 'never', 'not', 'walked away', 
-                                   'chose peace', 'defied', 'rebelled', 'scared', 'terrified', 'coward', 'fear',
-                                   'wrong', 'evil', 'dark', 'guilt', 'betray', 'abandon']
-        self.positive_keywords = ['enjoyed', 'liked', 'obeyed', 'trusted', 'relied', 'followed', 'respected', 
-                                   'fought willingly', 'attacked', 'brave', 'courage', 'bold', 'hero', 
-                                   'right', 'good', 'light', 'innocent', 'loyal', 'protect', 'defend']
+        self.sentiment = SentimentAnalyzer()
 
     def update_state(self, experience: Experience, state: CharacterState) -> CharacterState:
         """
@@ -39,14 +35,8 @@ class ConstraintUpdater:
         # Detect dimensions
         for dim, keywords in self.dimension_keywords.items():
             if any(kw in text_lower for kw in keywords):
-                # Detect polarity
-                polarity = 'positive'
-                if any(kw in text_lower for kw in self.negative_keywords):
-                    polarity = 'negative'
-                elif any(kw in text_lower for kw in self.positive_keywords):
-                    polarity = 'positive'
-                else:
-                    polarity = 'positive'  # Default
+                # Detect polarity using VADER
+                polarity = self.sentiment.get_polarity(experience.raw_text_reference)
                 
                 if dim in new_constraints:
                     # Increase strength

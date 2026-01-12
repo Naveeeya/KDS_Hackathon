@@ -1,61 +1,61 @@
 story_id,prediction,rationale
-95,1,No meaningful conflicts. All constraint polarities align.
-136,1,No meaningful conflicts. All constraint polarities align.
-59,1,No meaningful conflicts. All constraint polarities align.
-60,1,No meaningful conflicts. All constraint polarities align.
-124,1,No meaningful conflicts. All constraint polarities align.
-111,1,No meaningful conflicts. All constraint polarities align.
-135,1,No meaningful conflicts. All constraint polarities align.
-27,1,No meaningful conflicts. All constraint polarities align.
-110,1,No meaningful conflicts. All constraint polarities align.
-42,1,No meaningful conflicts. All constraint polarities align.
-56,1,No meaningful conflicts. All constraint polarities align.
-80,1,No meaningful conflicts. All constraint polarities align.
-28,1,No meaningful conflicts. All constraint polarities align.
-101,1,No meaningful conflicts. All constraint polarities align.
-91,1,No meaningful conflicts. All constraint polarities align.
-24,1,No meaningful conflicts. All constraint polarities align.
-119,1,No meaningful conflicts. All constraint polarities align.
-93,1,No meaningful conflicts. All constraint polarities align.
-72,1,No meaningful conflicts. All constraint polarities align.
-16,1,No meaningful conflicts. All constraint polarities align.
-30,1,No meaningful conflicts. All constraint polarities align.
-97,1,No meaningful conflicts. All constraint polarities align.
-22,1,No meaningful conflicts. All constraint polarities align.
-53,1,No meaningful conflicts. All constraint polarities align.
-58,1,No meaningful conflicts. All constraint polarities align.
-81,1,No meaningful conflicts. All constraint polarities align.
-47,1,No meaningful conflicts. All constraint polarities align.
-7,1,No meaningful conflicts. All constraint polarities align.
-121,1,No meaningful conflicts. All constraint polarities align.
-129,1,No meaningful conflicts. All constraint polarities align.
-51,1,No meaningful conflicts. All constraint polarities align.
-127,1,No meaningful conflicts. All constraint polarities align.
-133,1,No meaningful conflicts. All constraint polarities align.
-52,1,No meaningful conflicts. All constraint polarities align.
-114,1,No meaningful conflicts. All constraint polarities align.
-2,0,Conflict in [trust]
-33,1,No meaningful conflicts. All constraint polarities align.
-15,1,No meaningful conflicts. All constraint polarities align.
-82,1,No meaningful conflicts. All constraint polarities align.
-37,1,No meaningful conflicts. All constraint polarities align.
-3,1,No meaningful conflicts. All constraint polarities align.
-103,1,No meaningful conflicts. All constraint polarities align.
-94,1,No meaningful conflicts. All constraint polarities align.
-85,1,No meaningful conflicts. All constraint polarities align.
-21,1,No meaningful conflicts. All constraint polarities align.
-49,0,Conflict in [authority]
-140,0,Conflict in [trust]
-64,1,No meaningful conflicts. All constraint polarities align.
-131,1,No meaningful conflicts. All constraint polarities align.
-61,1,No meaningful conflicts. All constraint polarities align.
-86,1,No meaningful conflicts. All constraint polarities align.
-38,1,No meaningful conflicts. All constraint polarities align.
-132,1,No meaningful conflicts. All constraint polarities align.
-77,1,No meaningful conflicts. All constraint polarities align.
-70,1,No meaningful conflicts. All constraint polarities align.
-115,1,No meaningful conflicts. All constraint polarities align.
-78,0,Conflict in [authority]
-87,1,No meaningful conflicts. All constraint polarities align.
-75,1,No meaningful conflicts. All constraint polarities align.
-44,1,No meaningful conflicts. All constraint polarities align.
+95,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+136,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+59,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+60,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+124,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+111,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+135,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+27,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+110,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+42,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+56,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+80,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+28,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+101,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+91,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+24,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+119,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+93,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+72,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+16,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+30,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+97,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+22,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+53,0,[VIOLENCE]: Story shows positive violence while backstory shows negative.
+58,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+81,0,[AUTHORITY]: Story shows positive authority while backstory shows negative.
+47,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+7,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+121,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+129,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+51,0,[VIOLENCE]: Story shows positive violence while backstory shows negative.
+127,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+133,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+52,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+114,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+2,0,[TRUST]: Story shows positive trust while backstory shows negative.
+33,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+15,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+82,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+37,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+3,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+103,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+94,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+85,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+21,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+49,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+140,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+64,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+131,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+61,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+86,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+38,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+132,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+77,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+70,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+115,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+78,0,[AUTHORITY]: Story shows positive authority while backstory shows negative.
+87,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+75,1,No meaningful conflicts. Behavior aligns with backstory constraints.
+44,1,No meaningful conflicts. Behavior aligns with backstory constraints.

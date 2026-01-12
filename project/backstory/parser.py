@@ -8,6 +8,8 @@ import re
 import hashlib
 
 
+from narrative.sentiment import SentimentAnalyzer
+
 class BackstoryParser:
     def __init__(self):
         # Dimension keywords
@@ -19,10 +21,7 @@ class BackstoryParser:
             "loyalty": ["loyal", "betray", "abandon", "protect", "defend", "sacrifice"],
             "morality": ["right", "wrong", "evil", "good", "dark", "innocent", "guilt"]
         }
-        # Negative indicators
-        self.negatives = ['never', 'not', 'no', 'without', 'avoided', 'refused', 'questioned', 'distrusted', 'defied', 'rebelled', 'kept to himself']
-        # Positive indicators
-        self.positives = ['enjoyed', 'liked', 'obeyed', 'obey', 'trusted', 'relied', 'followed', 'respected', 'formed close bonds', 'fought willingly', 'attacked']
+        self.sentiment = SentimentAnalyzer()
 
     def parse_backstory(self, backstory_text: str) -> CharacterState:
         """
@@ -43,13 +42,8 @@ class BackstoryParser:
             # Detect dimensions and polarities
             for dim, keywords in self.dimension_keywords.items():
                 if any(kw in lower_sent for kw in keywords):
-                    # Determine polarity
-                    if any(neg in lower_sent for neg in self.negatives):
-                        polarity = 'negative'
-                    elif any(pos in lower_sent for pos in self.positives):
-                        polarity = 'positive'
-                    else:
-                        polarity = 'positive'  # Default
+                    # Determine polarity using VADER
+                    polarity = self.sentiment.get_polarity(sentence)
                     
                     # Generate ID
                     claim_id = hashlib.md5(sentence.encode()).hexdigest()[:8]

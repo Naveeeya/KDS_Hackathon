@@ -2,3 +2,4 @@ pathway>=0.2.0  # Pathway streaming data framework
 pandas  # For results.csv
 pytest  # For testing
 pdfplumber  # For PDF text extraction
+nltk  # For VADER sentiment analysis (improved accuracy)
