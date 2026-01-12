@@ -24,9 +24,9 @@ class LLMConsistencyAnalyzer:
             try:
                 import google.generativeai as genai
                 genai.configure(api_key=gemini_key)
-                self.client = genai.GenerativeModel('gemini-1.5-flash')
+                self.client = genai.GenerativeModel('gemini-2.0-flash')  # Updated model
                 self.provider = "gemini"
-                print("Using Google Gemini (free tier: 60 req/min)")
+                print("Using Google Gemini 2.0 Flash (free tier: 60 req/min)")
             except:
                 pass
         
