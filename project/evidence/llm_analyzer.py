@@ -90,7 +90,11 @@ Be strict: if there's clear contradiction, mark as 0. If uncertain or aligned, m
             )
             
             import json
+            import time
             result = json.loads(response.choices[0].message.content)
+            
+            # Add small delay to avoid rate limits
+            time.sleep(1)
             
             return {
                 'prediction': int(result.get('prediction', 1)),
@@ -101,10 +105,12 @@ Be strict: if there's clear contradiction, mark as 0. If uncertain or aligned, m
             
         except Exception as e:
             # Fallback on error
+            import time
+            time.sleep(2)  # Longer delay on error to avoid repeated rate limits
             return {
                 'prediction': 1,
                 'confidence': 0.3,
-                'rationale': f"LLM error: {str(e)}",
+                'rationale': f"LLM error: {str(e)[:50]}",
                 'conflicts': []
             }
     
