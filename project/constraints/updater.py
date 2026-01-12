@@ -35,13 +35,11 @@ class ConstraintUpdater:
         # Update constraints
         new_constraints = state.constraints.copy()
         text_lower = experience.raw_text_reference.lower()
-        print(f"text: {text_lower}")
         
         # Detect dimensions
         for dim, keywords in self.dimension_keywords.items():
             if any(kw in text_lower for kw in keywords):
                 # Detect polarity
-                print(f"any neg: {any(kw in text_lower for kw in self.negative_keywords)}")
                 polarity = 'positive'
                 if any(kw in text_lower for kw in self.negative_keywords):
                     polarity = 'negative'
@@ -49,7 +47,6 @@ class ConstraintUpdater:
                     polarity = 'positive'
                 else:
                     polarity = 'positive'  # Default
-                print(f"polarity set to {polarity}")
                 
                 if dim in new_constraints:
                     # Increase strength

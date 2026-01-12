@@ -22,7 +22,6 @@ class ConstraintComparator:
                 checked_dimensions.append(dim)
                 story_con = story_state.constraints[dim]
                 back_con = backstory_state.constraints[dim]
-                print(f"dim {dim}, story {story_con.polarity}, back {back_con.polarity}")
                 if story_con.polarity != back_con.polarity:
                     # Calculate severity
                     max_strength = max(story_con.strength, back_con.strength)
