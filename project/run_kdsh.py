@@ -14,8 +14,7 @@ from constraints.schema import CharacterState
 from constraints.updater import ConstraintUpdater
 from backstory.parser import BackstoryParser
 from constraints.comparator import ConstraintComparator
-from evidence.dossier_generator import DossierGenerator
-from pathway_pipeline.vector_store import PathwayDocumentProcessor
+
 
 
 # Map book names to file paths

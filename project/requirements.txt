@@ -1,5 +1,5 @@
-pathway>=0.2.0  # Pathway streaming data framework
-pandas  # For results.csv
-pytest  # For testing
-pdfplumber  # For PDF text extraction
-nltk  # For VADER sentiment analysis (improved accuracy)
+pathway>=0.12.0  # Pathway streaming data framework
+pandas>=2.0.0  # For results.csv
+pytest>=7.0.0  # For testing
+pdfplumber>=0.10.0  # For PDF text extraction
+nltk>=3.8.1  # For VADER sentiment analysis (improved accuracy)
