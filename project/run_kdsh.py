@@ -91,7 +91,7 @@ def analyze_single(novel_text: str, backstory_text: str, character_name: str = N
     final_result = hybrid.analyze(
         constraint_result=constraint_result,
         backstory=backstory_text,
-        evidence_passages=all_passages[:15],  # Send top 15 passages to LLM
+        evidence_passages=all_passages[:5],  # Send top 5 passages (optimized)
         character_name=character_name or ""
     )
     

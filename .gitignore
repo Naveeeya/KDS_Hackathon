@@ -37,3 +37,4 @@ Thumbs.db
 
 # Data (if large files)
 # data/large_files/.env
+.env
