@@ -108,18 +108,21 @@ def main():
     if conflict_dims_with_evidence:
         final_result = 0
         conflict_list = ", ".join(conflict_dims_with_evidence)
-        explanation = f"Polarity mismatch detected in [{conflict_list}]. Severity: HIGH. Contradicting evidence dominates in these dimensions, exceeding threshold."
+        rationale = f"Polarity mismatch detected in [{conflict_list}]. Severity: HIGH. Contradicting evidence dominates in these dimensions, exceeding threshold."
     else:
         final_result = 1
         if significant_conflicts:
-            explanation = "Minor conflicts detected but below evidence dominance threshold. All major constraints align between story and backstory."
+            rationale = "Minor conflicts detected but below evidence dominance threshold. All major constraints align between story and backstory."
         else:
-            explanation = "No meaningful conflicts detected. All constraint polarities align between story and backstory."
+            rationale = "No meaningful conflicts detected. All constraint polarities align between story and backstory."
     
-    # Write simple CSV with ONLY Result and Explanation
+    # Extract story_id from novel filename (or use default)
+    story_id = novel_path.split("/")[-1].replace(".txt", "").replace("_main", "")
+    
+    # Write CSV in required format: story_id, prediction, rationale
     with open('results/results.csv', 'w') as f:
-        f.write("Result,Explanation\n")
-        f.write(f"{final_result},\"{explanation}\"\n")
+        f.write("story_id,prediction,rationale\n")
+        f.write(f"{story_id},{final_result},\"{rationale}\"\n")
     
     print(f"    - Saved CSV: results/results.csv")
     
@@ -127,8 +130,9 @@ def main():
     print("\n" + "=" * 60)
     print("FINAL RESULT")
     print("=" * 60)
-    print(f"\nResult: {final_result}")
-    print(f"Explanation: {explanation}")
+    print(f"\nstory_id: {story_id}")
+    print(f"prediction: {final_result}")
+    print(f"rationale: {rationale}")
 
 
 if __name__ == "__main__":

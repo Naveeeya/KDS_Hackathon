@@ -1,2 +1,2 @@
-Result,Explanation
-1,"No meaningful conflicts detected. All constraint polarities align between story and backstory."
+story_id,prediction,rationale
+harry_potter,1,"No meaningful conflicts detected. All constraint polarities align between story and backstory."

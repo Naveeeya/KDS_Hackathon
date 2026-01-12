@@ -1,6 +1,6 @@
 # Narrative Consistency Dossier
 
-**Generated:** 2026-01-11T15:34:40.589341
+**Generated:** 2026-01-12T12:43:04.542938
 
 > [!NOTE]
 > **Decision: CONSISTENT**
