@@ -1,26 +1,50 @@
 """
-Optimized LLM-based consistency analyzer.
+Multi-provider LLM analyzer with Google Gemini and OpenAI support.
 """
 
 import os
 import time
 from typing import List, Dict
-from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
 class LLMConsistencyAnalyzer:
-    """Optimized GPT-4 analyzer for narrative consistency."""
+    """Multi-provider LLM analyzer (Gemini + OpenAI)."""
     
-    def __init__(self, api_key: str = None, model: str = None):
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not self.api_key:
-            raise ValueError("OpenAI API key required. See .env.example")
-        self.client = OpenAI(api_key=self.api_key)
-        self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-        self.retry_delays = [0.5, 1, 2, 5]  # Exponential backoff
+    def __init__(self):
+        # Try Gemini first (better free tier), then OpenAI
+        self.provider = None
+        self.client = None
+        
+        # Try Google Gemini
+        gemini_key = os.getenv("GEMINI_API_KEY")
+        if gemini_key:
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=gemini_key)
+                self.client = genai.GenerativeModel('gemini-1.5-flash')
+                self.provider = "gemini"
+                print("Using Google Gemini (free tier: 60 req/min)")
+            except:
+                pass
+        
+        # Fallback to OpenAI
+        if not self.provider:
+            openai_key = os.getenv("OPENAI_API_KEY")
+            if openai_key:
+                try:
+                    from openai import OpenAI
+                    self.client = OpenAI(api_key=openai_key)
+                    self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+                    self.provider = "openai"
+                    print("Using OpenAI GPT-4")
+                except:
+                    pass
+        
+        if not self.provider:
+            raise ValueError("No LLM provider available. Set GEMINI_API_KEY or OPENAI_API_KEY in .env")
     
     def analyze_consistency(
         self, 
@@ -28,12 +52,10 @@ class LLMConsistencyAnalyzer:
         evidence_passages: List[str],
         character_name: str = ""
     ) -> Dict:
-        """Analyze consistency with optimized prompt and retry logic."""
+        """Analyze consistency using available LLM provider."""
         
-        # Limit evidence to top 5 passages for speed
         evidence_text = "\n\n".join(evidence_passages[:5])
         
-        # Simplified, more direct prompt
         prompt = f"""Analyze if this backstory is CONSISTENT or CONTRADICTORY with the novel evidence.
 
 BACKSTORY:
@@ -48,25 +70,38 @@ Is the backstory consistent with the evidence? Reply in JSON:
   "reason": "one sentence explanation"
 }}
 
-0 = CONTRADICT (clear mismatch between backstory and evidence)
-1 = CONSISTENT (backstory aligns with or doesn't contradict evidence)"""
+0 = CONTRADICT (clear mismatch)
+1 = CONSISTENT (aligns or no contradiction)"""
 
-        # Retry logic with exponential backoff
-        for attempt, delay in enumerate(self.retry_delays):
+        # Try with retries
+        for attempt in range(3):
             try:
-                response = self.client.chat.completions.create(
-                    model=self.model,
-                    messages=[
-                        {"role": "system", "content": "You analyze character consistency in narratives."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=0.1,
-                    max_tokens=150,
-                    response_format={"type": "json_object"}
-                )
+                if self.provider == "gemini":
+                    response = self.client.generate_content(
+                        prompt,
+                        generation_config={
+                            "temperature": 0.1,
+                            "max_output_tokens": 150,
+                        }
+                    )
+                    result_text = response.text
+                    
+                elif self.provider == "openai":
+                    response = self.client.chat.completions.create(
+                        model=self.model,
+                        messages=[
+                            {"role": "system", "content": "Analyze character consistency."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=0.1,
+                        max_tokens=150,
+                        response_format={"type": "json_object"}
+                    )
+                    result_text = response.choices[0].message.content
                 
+                # Parse result
                 import json
-                result = json.loads(response.choices[0].message.content)
+                result = json.loads(result_text)
                 
                 return {
                     'prediction': int(result.get('prediction', 1)),
@@ -76,11 +111,10 @@ Is the backstory consistent with the evidence? Reply in JSON:
                 }
                 
             except Exception as e:
-                if "rate_limit" in str(e).lower() or "429" in str(e):
-                    if attempt < len(self.retry_delays) - 1:
-                        time.sleep(delay)
-                        continue
-                # Fallback on final error
+                if attempt < 2:
+                    time.sleep(1 * (attempt + 1))  # 1s, 2s
+                    continue
+                # Final fallback
                 return {
                     'prediction': 1,
                     'confidence': 0.2,
@@ -90,14 +124,15 @@ Is the backstory consistent with the evidence? Reply in JSON:
 
 
 class HybridAnalyzer:
-    """Fast hybrid: constraint + LLM verification."""
+    """Fast hybrid: constraint + multi-provider LLM."""
     
     def __init__(self, use_llm: bool = True):
         self.use_llm = use_llm
         if use_llm:
             try:
                 self.llm = LLMConsistencyAnalyzer()
-            except:
+            except Exception as e:
+                print(f"LLM initialization failed: {e}")
                 self.use_llm = False
     
     def analyze(
