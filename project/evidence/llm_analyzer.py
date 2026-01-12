@@ -1,5 +1,5 @@
 """
-Multi-provider LLM analyzer with Google Gemini and OpenAI support.
+Multi-provider LLM analyzer with Google Gemini (via google-genai) and OpenAI support.
 """
 
 import os
@@ -18,16 +18,19 @@ class LLMConsistencyAnalyzer:
         self.provider = None
         self.client = None
         
-        # Try Google Gemini
+        # Try Google Gemini (New google-genai package)
         gemini_key = os.getenv("GEMINI_API_KEY")
         if gemini_key:
             try:
-                import google.generativeai as genai
-                genai.configure(api_key=gemini_key)
-                self.client = genai.GenerativeModel('gemini-2.0-flash')  # Updated model
+                from google import genai
+                from google.genai import types
+                self.client = genai.Client(api_key=gemini_key)
                 self.provider = "gemini"
-                print("Using Google Gemini 2.0 Flash (free tier: 60 req/min)")
-            except:
+                # Use gemini-2.0-flash as primary
+                self.model_name = "gemini-2.0-flash"
+                print(f"Using Google Gemini {self.model_name} (via google-genai)")
+            except Exception as e:
+                print(f"Failed to initialize Gemini: {e}")
                 pass
         
         # Fallback to OpenAI
@@ -44,7 +47,7 @@ class LLMConsistencyAnalyzer:
                     pass
         
         if not self.provider:
-            raise ValueError("No LLM provider available. Set GEMINI_API_KEY or OPENAI_API_KEY in .env")
+            print("Warning: No LLM provider available. Falling back to constraint-only analysis.")
     
     def analyze_consistency(
         self, 
@@ -54,6 +57,14 @@ class LLMConsistencyAnalyzer:
     ) -> Dict:
         """Analyze consistency using available LLM provider."""
         
+        if not self.provider:
+             return {
+                'prediction': 1,
+                'confidence': 0.0,
+                'rationale': "LLM provider unavailable",
+                'conflicts': []
+            }
+
         evidence_text = "\n\n".join(evidence_passages[:5])
         
         prompt = f"""Analyze if this backstory is CONSISTENT or CONTRADICTORY with the novel evidence.
@@ -77,12 +88,15 @@ Is the backstory consistent with the evidence? Reply in JSON:
         for attempt in range(3):
             try:
                 if self.provider == "gemini":
-                    response = self.client.generate_content(
-                        prompt,
-                        generation_config={
-                            "temperature": 0.1,
-                            "max_output_tokens": 150,
-                        }
+                    from google.genai import types
+                    response = self.client.models.generate_content(
+                        model=self.model_name,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            temperature=0.1,
+                            max_output_tokens=150,
+                            response_mime_type="application/json"
+                        )
                     )
                     result_text = response.text
                     
@@ -111,16 +125,16 @@ Is the backstory consistent with the evidence? Reply in JSON:
                 }
                 
             except Exception as e:
+                if "429" in str(e) or "ResourceExhausted" in str(e):
+                    print("Gemini quota exceeded.")
+                    break  # Stop retrying if quota exceeded
                 if attempt < 2:
-                    time.sleep(1 * (attempt + 1))  # 1s, 2s
+                    time.sleep(1 * (attempt + 1))
                     continue
-                # Final fallback
-                return {
-                    'prediction': 1,
-                    'confidence': 0.2,
-                    'rationale': "LLM unavailable",
-                    'conflicts': []
-                }
+                print(f"LLM Error: {e}")
+        
+        # Final fallback - Return specific error status to let hybrid analyzer fallback to constraints
+        return None
 
 
 class HybridAnalyzer:
@@ -134,6 +148,7 @@ class HybridAnalyzer:
             except Exception as e:
                 print(f"LLM initialization failed: {e}")
                 self.use_llm = False
+                self.llm = None
     
     def analyze(
         self,
@@ -144,19 +159,31 @@ class HybridAnalyzer:
     ) -> Dict:
         """Quick hybrid analysis."""
         
-        # If no LLM or no evidence, use constraints only
-        if not self.use_llm or not evidence_passages:
-            conflicts = constraint_result.get('conflicts', [])
-            pred = 0 if len(conflicts) > 0 else 1
-            if pred == 0:
-                dims = [c['dimension'] for c in conflicts[:2]]
-                rationale = f"Conflict in [{', '.join(dims)}]"
-            else:
-                rationale = "No conflicts detected"
-            return {'prediction': pred, 'rationale': rationale}
+        # Prepare constraint-based fallback result first
+        conflicts = constraint_result.get('conflicts', [])
+        constraint_pred = 0 if len(conflicts) > 0 else 1
+        if constraint_pred == 0:
+            dims = [c['dimension'] for c in conflicts[:2]]
+            constraint_rationale = f"Constraint conflict in [{', '.join(dims)}]"
+        else:
+            constraint_rationale = "No meaningful conflicts. All constraint polarities align."
+            
+        constraint_fallback = {
+            'prediction': constraint_pred,
+            'rationale': constraint_rationale
+        }
+
+        # If no LLM, return constraint result
+        if not self.use_llm or not self.llm or not evidence_passages:
+            return constraint_fallback
         
-        # Use LLM for final decision
+        # Try LLM
         llm_result = self.llm.analyze_consistency(backstory, evidence_passages, character_name)
+        
+        # If LLM failed (returned None), use fallback
+        if llm_result is None or llm_result.get('rationale') == "LLM provider unavailable":
+            return constraint_fallback
+            
         return {
             'prediction': llm_result['prediction'],
             'rationale': llm_result['rationale']
