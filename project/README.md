@@ -1,218 +1,105 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Pathway-Framework-orange?style=for-the-badge" alt="Pathway">
-  <img src="https://img.shields.io/badge/KDS-Hackathon-purple?style=for-the-badge" alt="Hackathon">
-  <img src="https://img.shields.io/badge/Track-A-green?style=for-the-badge" alt="Track A">
-</p>
+# KDSH 2026 - Narrative Consistency Analysis
 
-<h1 align="center">🔍 Narrative Consistency Reasoning System</h1>
+## Track A: Systems Reasoning with NLP and Generative AI
 
-<p align="center">
-  <strong>A deterministic, explainable AI system for verifying character backstory consistency against full-length novels</strong>
-</p>
-
-<p align="center">
-  <em>Built for KDS Hackathon Track A — Interpretable Predictions with Evidence-Based Explanations</em>
-</p>
-
----
-
-## 🎯 Problem Statement
-
-Given a **hypothetical backstory** and a **full novel**, determine if the backstory is **consistent** with the character's behavior throughout the narrative.
-
-| Requirement | Description |
-|-------------|-------------|
-| **Deterministic** | Same inputs always produce identical outputs |
-| **Explainable** | Clear, human-readable reasoning for all predictions |
-| **Evidence-Based** | References specific text snippets from the novel |
-| **Scalable** | Efficiently handles long-form narratives |
-
----
-
-## 💡 Solution Overview
-
-We model characters as **evolving constraint systems** where behavioral patterns are extracted from narrative experiences and compared against backstory claims.
-
-### Key Features
-
-| Feature | Description |
-|---------|-------------|
-| 🔄 **End-to-End Pipeline** | Complete ingestion to results generation |
-| 🎯 **Constraint-Based Modeling** | Characters as multi-dimensional constraint systems |
-| 📈 **Incremental Learning** | Constraints evolve through narrative experiences |
-| ⚖️ **Polarity Detection** | Positive/negative pattern classification |
-| ⚠️ **Conflict Analysis** | Severity-based inconsistency detection |
-| 📎 **Evidence Retrieval** | Snippet extraction for explainability |
-
----
-
-## 🏗️ System Architecture
-
-```mermaid
-flowchart TB
-    subgraph Input
-        N[📖 Novel Text]
-        B[📝 Backstory Text]
-    end
-    
-    subgraph Processing
-        C[Chunker] --> E[Experience Detector]
-        E --> U[Constraint Updater]
-        P[Backstory Parser]
-    end
-    
-    subgraph State
-        CS[Character State]
-        BS[Backstory State]
-    end
-    
-    subgraph Output
-        CMP[Comparator] --> R[Results CSV]
-    end
-    
-    N --> C
-    U --> CS --> CMP
-    B --> P --> BS --> CMP
-```
-
----
-
-## 🔄 Pipeline Workflow
-
-```mermaid
-flowchart LR
-    A[📖 Novel + 📝 Backstory] --> B[Ingest & Chunk]
-    B --> C[Detect Experiences]
-    C --> D[Build Constraints]
-    D --> E[Compare Polarities]
-    E --> F{Conflict?}
-    F -->|Yes| G[❌ Inconsistent]
-    F -->|No| H[✅ Consistent]
-    G --> I[📊 Results CSV]
-    H --> I
-```
-
----
-
-## 🎚️ Constraint Dimensions
-
-The system tracks three core behavioral dimensions:
-
-| Dimension | Keywords | Description |
-|-----------|----------|-------------|
-| **Violence** | `violence`, `fight`, `attack`, `conflict`, `battle` | Fighting, conflict, aggression patterns |
-| **Authority** | `authority`, `leader`, `rule`, `obey`, `defy` | Leadership, obedience, defiance behaviors |
-| **Trust** | `trust`, `betray`, `rely`, `bond`, `distrust` | Relationships, betrayal, reliance dynamics |
-
-Each constraint has:
-- **Polarity**: Positive (engages) or Negative (avoids)
-- **Strength**: Confidence level (0.0 - 1.0)
-- **Evidence**: References to supporting text
-
----
+A constraint-based narrative consistency reasoning system that determines if a hypothetical character backstory is consistent with their behavior throughout a full-length novel.
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone and setup
-git clone https://github.com/Naveeeya/KDS_Hackathon.git
-cd KDS_Hackathon/project
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
-# Install and run
-pip install -r requirements.txt
-python pathway_pipeline/orchestration.py
+cd project
+python3 run_kdsh.py
 ```
 
----
+Results are saved to `results/results.csv` in format: `story_id,prediction,rationale`
 
-## 📖 Usage
+## 🏗️ Architecture
 
-### Input Files
-
-```
-data/
-├── novels/
-│   └── your_novel.txt          # Full novel text
-└── backstories/
-    └── your_backstory.txt      # Backstory claims
-```
-
-### Output Format
-
-The system generates `results/results.csv`:
-
-| Column | Description |
-|--------|-------------|
-| `prediction` | 0 (inconsistent) or 1 (consistent) |
-| `decision` | "inconsistent" or "consistent" |
-| `reason` | Human-readable explanation |
-| `conflict_details` | Detailed constraint comparisons |
-
----
-
-## 📝 Example
-
-**Novel:**
-```
-He always avoided violence.
-He refused to fight even when threatened.
+```mermaid
+flowchart TD
+    A[test.csv] --> B[run_kdsh.py]
+    B --> C[Pathway Vector Store]
+    C --> D[Semantic Retrieval]
+    D --> E[Experience Detector]
+    E --> F[Constraint Updater]
+    G[Backstory] --> H[Backstory Parser]
+    F --> I[Constraint Comparator]
+    H --> I
+    I --> J[results.csv]
 ```
 
-**Backstory:**
+## 🔑 Key Features
+
+### 1. Pathway Integration
+- **Vector Store**: TF-IDF based semantic similarity for document retrieval
+- **Document Processor**: Streaming-ready chunking with overlap
+- **Character Filtering**: Retrieves passages mentioning specific characters
+
+### 2. Constraint-Based Reasoning
+- **6 Behavioral Dimensions**: violence, authority, trust, courage, loyalty, morality
+- **Polarity Detection**: Classifies patterns as positive/negative
+- **Evidence Dominance**: Threshold-based conflict detection (0.3 ratio)
+
+### 3. Explainable Output
+```csv
+story_id,prediction,rationale
+95,1,No meaningful conflicts. All constraint polarities align.
+2,0,Polarity mismatch in [trust]. HIGH severity with evidence dominance.
 ```
-He grew up enjoying violence.
-He believed fighting was the solution.
-```
-
-**Result:** `❌ INCONSISTENT` — Story shows negative violence polarity, backstory claims positive.
-
----
-
-## 🧪 Testing
-
-```bash
-python -m pytest tests/ -v
-```
-
----
 
 ## 📁 Project Structure
 
 ```
 project/
-├── pathway_pipeline/     # Data ingestion & orchestration
-├── narrative/           # Text processing & experience detection
-├── constraints/         # Core constraint logic & comparison
-├── backstory/           # Backstory parsing
-├── evidence/            # Snippet retrieval
-├── tests/              # Unit tests
-├── data/               # Input texts
-└── results/            # Output CSVs
+├── run_kdsh.py              # Main batch processor
+├── pathway_pipeline/
+│   ├── vector_store.py      # Pathway semantic retrieval
+│   ├── ingestion.py         # Data loading
+│   └── orchestration.py     # Single-file pipeline
+├── narrative/
+│   ├── chunker.py           # Text chunking
+│   └── experience_detector.py
+├── constraints/
+│   ├── schema.py            # Data structures
+│   ├── updater.py           # Constraint evolution
+│   ├── comparator.py        # Conflict detection
+│   └── parser.py            # Backstory parsing
+├── evidence/
+│   └── dossier_generator.py # Detailed evidence linkage
+└── results/
+    └── results.csv          # Final predictions
 ```
 
----
+## 🔧 Technical Approach
 
-## 📈 Performance
+### Long Context Handling
+1. **Semantic Chunking**: Novels split into 2000-word overlapping chunks
+2. **Pathway Vector Store**: TF-IDF indexing for efficient retrieval
+3. **Character-Based Filtering**: Focus analysis on character-relevant passages
 
-| Metric | Value |
-|--------|-------|
-| **Determinism** | 100% (rule-based) |
-| **Complexity** | O(n) linear |
-| **Speed** | Sub-second for typical novels |
+### Decision Logic
+- Extract behavioral experiences from novel
+- Parse backstory claims into constraints
+- Compare polarities across 6 dimensions
+- **Contradict (0)**: HIGH severity conflict with evidence dominance ≥ 30%
+- **Consistent (1)**: No meaningful polarity mismatches
 
----
+## 📊 Results Format
+| Column | Description |
+|--------|-------------|
+| story_id | Sample ID from test.csv |
+| prediction | 0 (contradict) or 1 (consistent) |
+| rationale | Brief technical explanation |
 
-## 📄 License
+## 🛠️ Requirements
+```
+pathway>=0.2.0
+pandas
+pytest
+pdfplumber
+```
 
-Developed for the **KDS Hackathon**. See repository license for details.
-
----
-
-<p align="center">
-  <strong>Made with ❤️ for KDS Hackathon Track A</strong>
-</p>
+## 🎯 Novel Contribution
+- **Constraint Evolution Model**: Characters as evolving constraint systems
+- **Evidence Dominance Scoring**: Quantitative conflict threshold
+- **Pathway Integration**: Semantic retrieval for long narratives

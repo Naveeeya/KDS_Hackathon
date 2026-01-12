@@ -4,7 +4,7 @@ story_id,prediction,rationale
 59,1,No meaningful conflicts. All constraint polarities align.
 60,1,No meaningful conflicts. All constraint polarities align.
 124,1,No meaningful conflicts. All constraint polarities align.
-111,1,No meaningful conflicts. All constraint polarities align.
+111,0,Polarity mismatch in [trust]. HIGH severity with evidence dominance.
 135,1,No meaningful conflicts. All constraint polarities align.
 27,1,No meaningful conflicts. All constraint polarities align.
 110,1,No meaningful conflicts. All constraint polarities align.
@@ -34,7 +34,7 @@ story_id,prediction,rationale
 133,1,No meaningful conflicts. All constraint polarities align.
 52,1,No meaningful conflicts. All constraint polarities align.
 114,1,No meaningful conflicts. All constraint polarities align.
-2,0,Polarity mismatch in [trust]. HIGH severity with evidence dominance.
+2,1,No meaningful conflicts. All constraint polarities align.
 33,1,No meaningful conflicts. All constraint polarities align.
 15,1,No meaningful conflicts. All constraint polarities align.
 82,1,No meaningful conflicts. All constraint polarities align.
@@ -45,7 +45,7 @@ story_id,prediction,rationale
 85,1,No meaningful conflicts. All constraint polarities align.
 21,1,No meaningful conflicts. All constraint polarities align.
 49,1,No meaningful conflicts. All constraint polarities align.
-140,1,No meaningful conflicts. All constraint polarities align.
+140,0,Polarity mismatch in [trust]. HIGH severity with evidence dominance.
 64,1,No meaningful conflicts. All constraint polarities align.
 131,1,No meaningful conflicts. All constraint polarities align.
 61,1,No meaningful conflicts. All constraint polarities align.
@@ -58,4 +58,4 @@ story_id,prediction,rationale
 78,0,Polarity mismatch in [authority]. HIGH severity with evidence dominance.
 87,1,No meaningful conflicts. All constraint polarities align.
 75,1,No meaningful conflicts. All constraint polarities align.
-44,1,No meaningful conflicts. All constraint polarities align.
+44,0,Polarity mismatch in [trust]. HIGH severity with evidence dominance.

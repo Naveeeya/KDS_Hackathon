@@ -1,6 +1,6 @@
 """
-Batch processor for hackathon dataset.
-Reads test.csv, runs pipeline on each entry, outputs predictions.
+KDSH 2026 - Narrative Consistency Analysis
+Batch processor using Pathway vector store for semantic retrieval.
 """
 
 import sys
@@ -15,6 +15,7 @@ from constraints.updater import ConstraintUpdater
 from backstory.parser import BackstoryParser
 from constraints.comparator import ConstraintComparator
 from evidence.dossier_generator import DossierGenerator
+from pathway_pipeline.vector_store import PathwayDocumentProcessor
 
 
 # Map book names to file paths
@@ -22,6 +23,9 @@ NOVEL_PATHS = {
     "The Count of Monte Cristo": "data/The Count of Monte Cristo.txt",
     "In Search of the Castaways": "data/In search of the castaways.txt"
 }
+
+# Lowered threshold for better conflict detection
+EVIDENCE_DOMINANCE_THRESHOLD = 0.3  # Was 0.5, now more sensitive
 
 
 def load_novel(book_name: str) -> str:
@@ -33,14 +37,35 @@ def load_novel(book_name: str) -> str:
         return f.read()
 
 
-def analyze_single(novel_text: str, backstory_text: str) -> dict:
+def analyze_single(novel_text: str, backstory_text: str, character_name: str = None) -> dict:
     """
     Run the full pipeline on a single novel + backstory pair.
-    Returns prediction (0 or 1) and rationale.
+    Uses Pathway vector store for semantic retrieval.
     """
-    # Chunk novel
+    # Use Pathway processor for semantic retrieval
+    pathway_processor = PathwayDocumentProcessor()
+    num_chunks = pathway_processor.ingest_novel(novel_text)
+    
+    # Retrieve relevant passages based on backstory content
+    relevant_passages = pathway_processor.retrieve_relevant_passages(backstory_text, top_k=30)
+    
+    # If character name provided, also retrieve character-specific passages
+    if character_name:
+        char_passages = pathway_processor.retrieve_by_character(character_name, top_k=50)
+        # Combine and deduplicate
+        all_passages = list(set(relevant_passages + char_passages))
+    else:
+        all_passages = relevant_passages
+    
+    # Use retrieved passages for analysis (or fall back to chunks if empty)
+    if all_passages:
+        analysis_text = '\n'.join(all_passages)
+    else:
+        analysis_text = novel_text[:100000]  # Fallback
+    
+    # Chunk for experience detection
     chunker = NarrativeChunker()
-    chunks = chunker.chunk_novel(novel_text)
+    chunks = chunker.chunk_novel(analysis_text)
     
     # Detect experiences
     detector = ExperienceDetector()
@@ -75,14 +100,15 @@ def analyze_single(novel_text: str, backstory_text: str) -> dict:
     # Filter for MEDIUM/HIGH severity conflicts only
     significant_conflicts = [c for c in conflicts if c.get("severity", "").lower() in ["medium", "high"]]
     
-    # Determine conflict dimensions with evidence dominance
+    # Determine conflict dimensions with evidence dominance (LOWERED THRESHOLD)
     conflict_dims_with_evidence = []
     for conflict in significant_conflicts:
         dim = conflict.get("dimension", "")
         dim_data = dossier["dimension_analysis"].get(dim, {})
         contradicting = dim_data.get("contradicting_count", 0)
         supporting = dim_data.get("supporting_count", 0)
-        if contradicting >= supporting * 0.5:
+        # More sensitive threshold: 30% instead of 50%
+        if contradicting >= supporting * EVIDENCE_DOMINANCE_THRESHOLD:
             conflict_dims_with_evidence.append(dim)
     
     # Final decision
@@ -102,7 +128,8 @@ def analyze_single(novel_text: str, backstory_text: str) -> dict:
 
 def main():
     print("=" * 60)
-    print("HACKATHON BATCH PROCESSOR")
+    print("KDSH 2026 - NARRATIVE CONSISTENCY ANALYZER")
+    print("Powered by Pathway Streaming Framework")
     print("=" * 60)
     
     # Load test.csv
@@ -113,6 +140,7 @@ def main():
     
     test_df = pd.read_csv(test_path)
     print(f"\nLoaded {len(test_df)} test samples")
+    print(f"Evidence Dominance Threshold: {EVIDENCE_DOMINANCE_THRESHOLD}")
     
     # Cache novels to avoid reloading
     novel_cache = {}
@@ -123,8 +151,9 @@ def main():
         story_id = row["id"]
         book_name = row["book_name"]
         backstory = row["content"]
+        character = row.get("char", "")  # Get character name if available
         
-        print(f"\n[{idx+1}/{len(test_df)}] Processing ID: {story_id} ({book_name})")
+        print(f"\n[{idx+1}/{len(test_df)}] ID: {story_id} | {book_name} | Char: {character}")
         
         try:
             # Load novel (cached)
@@ -133,8 +162,8 @@ def main():
                 novel_cache[book_name] = load_novel(book_name)
             novel_text = novel_cache[book_name]
             
-            # Run analysis
-            result = analyze_single(novel_text, backstory)
+            # Run analysis with character filtering
+            result = analyze_single(novel_text, backstory, character)
             
             results.append({
                 "story_id": story_id,
@@ -142,13 +171,14 @@ def main():
                 "rationale": result["rationale"]
             })
             
-            print(f"    Prediction: {result['prediction']}")
+            pred_label = "CONTRADICT" if result["prediction"] == 0 else "CONSISTENT"
+            print(f"    Prediction: {result['prediction']} ({pred_label})")
             
         except Exception as e:
             print(f"    ERROR: {str(e)}")
             results.append({
                 "story_id": story_id,
-                "prediction": 1,  # Default to consistent on error
+                "prediction": 1,
                 "rationale": f"Error during processing: {str(e)}"
             })
     
@@ -162,8 +192,10 @@ def main():
     print("=" * 60)
     print(f"\nResults saved to: {output_path}")
     print(f"Total samples: {len(results)}")
-    print(f"Predictions - 0 (contradict): {sum(1 for r in results if r['prediction'] == 0)}")
-    print(f"Predictions - 1 (consistent): {sum(1 for r in results if r['prediction'] == 1)}")
+    contradict_count = sum(1 for r in results if r['prediction'] == 0)
+    consistent_count = sum(1 for r in results if r['prediction'] == 1)
+    print(f"Predictions - 0 (CONTRADICT): {contradict_count} ({100*contradict_count/len(results):.1f}%)")
+    print(f"Predictions - 1 (CONSISTENT): {consistent_count} ({100*consistent_count/len(results):.1f}%)")
 
 
 if __name__ == "__main__":
