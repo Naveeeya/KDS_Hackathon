@@ -15,6 +15,7 @@ from constraints.updater import ConstraintUpdater
 from backstory.parser import BackstoryParser
 from constraints.comparator import ConstraintComparator
 from evidence.dossier_generator import DossierGenerator
+from evidence.llm_analyzer import HybridAnalyzer
 from pathway_pipeline.vector_store import PathwayDocumentProcessor
 
 
@@ -40,7 +41,7 @@ def load_novel(book_name: str) -> str:
 def analyze_single(novel_text: str, backstory_text: str, character_name: str = None) -> dict:
     """
     Run the full pipeline on a single novel + backstory pair.
-    Uses Pathway vector store for semantic retrieval.
+    Uses Pathway vector store for semantic retrieval + LLM for final analysis.
     """
     # Use Pathway processor for semantic retrieval
     pathway_processor = PathwayDocumentProcessor()
@@ -83,47 +84,21 @@ def analyze_single(novel_text: str, backstory_text: str, character_name: str = N
     
     # Compare constraints
     comparator = ConstraintComparator()
-    result = comparator.compare(character_state, backstory_state)
+    constraint_result = comparator.compare(character_state, backstory_state)
     
-    # Generate dossier for evidence analysis
-    dossier_gen = DossierGenerator()
-    dossier = dossier_gen.generate_dossier(
-        experiences=experiences,
-        backstory_text=backstory_text,
-        story_state=character_state,
-        backstory_state=backstory_state,
-        comparison_result=result
+    # Use hybrid analyzer (constraint + LLM)
+    hybrid = HybridAnalyzer(use_llm=True)
+    final_result = hybrid.analyze(
+        constraint_result=constraint_result,
+        backstory=backstory_text,
+        evidence_passages=all_passages[:15],  # Send top 15 passages to LLM
+        character_name=character_name or ""
     )
     
-    conflicts = result["conflicts"]
-    
-    # Filter for MEDIUM/HIGH severity conflicts only
-    significant_conflicts = [c for c in conflicts if c.get("severity", "").lower() in ["medium", "high"]]
-    
-    # Determine conflict dimensions with evidence dominance (LOWERED THRESHOLD)
-    conflict_dims_with_evidence = []
-    for conflict in significant_conflicts:
-        dim = conflict.get("dimension", "")
-        dim_data = dossier["dimension_analysis"].get(dim, {})
-        contradicting = dim_data.get("contradicting_count", 0)
-        supporting = dim_data.get("supporting_count", 0)
-        # More sensitive threshold: 30% instead of 50%
-        if contradicting >= supporting * EVIDENCE_DOMINANCE_THRESHOLD:
-            conflict_dims_with_evidence.append(dim)
-    
-    # Final decision
-    if conflict_dims_with_evidence:
-        prediction = 0
-        conflict_list = ", ".join(conflict_dims_with_evidence)
-        rationale = f"Polarity mismatch in [{conflict_list}]. HIGH severity with evidence dominance."
-    else:
-        prediction = 1
-        if significant_conflicts:
-            rationale = "Minor conflicts below evidence threshold. Constraints align."
-        else:
-            rationale = "No meaningful conflicts. All constraint polarities align."
-    
-    return {"prediction": prediction, "rationale": rationale}
+    return {
+        "prediction": final_result['prediction'],
+        "rationale": final_result['rationale']
+    }
 
 
 def main():

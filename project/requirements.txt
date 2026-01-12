@@ -1,5 +1,6 @@
 pathway>=0.2.0  # Pathway streaming data framework
-openai  # For LLM extraction if needed
+openai  # For LLM-based consistency analysis
+python-dotenv  # For loading .env files
 pandas  # For results.csv
 pytest  # For testing
 pdfplumber  # For PDF text extraction
