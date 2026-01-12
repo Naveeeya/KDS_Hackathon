@@ -15,7 +15,6 @@ from constraints.updater import ConstraintUpdater
 from backstory.parser import BackstoryParser
 from constraints.comparator import ConstraintComparator
 from evidence.dossier_generator import DossierGenerator
-from evidence.llm_analyzer import HybridAnalyzer
 from pathway_pipeline.vector_store import PathwayDocumentProcessor
 
 
@@ -38,67 +37,61 @@ def load_novel(book_name: str) -> str:
         return f.read()
 
 
-def analyze_single(novel_text: str, backstory_text: str, character_name: str = None) -> dict:
+# Configuration
+EVIDENCE_DOMINANCE_THRESHOLD = 0.3  # Tuned for improved recall
+
+
+def analyze_single(novel_text, backstory_text, character_name=""):
     """
-    Run the full pipeline on a single novel + backstory pair.
-    Uses Pathway vector store for semantic retrieval + LLM for final analysis.
+    Run pipeline for a single backstory.
+    Returns dictionary with prediction and rationale.
     """
-    # Use Pathway processor for semantic retrieval
-    pathway_processor = PathwayDocumentProcessor()
-    num_chunks = pathway_processor.ingest_novel(novel_text)
-    
-    # Retrieve relevant passages based on backstory content
-    relevant_passages = pathway_processor.retrieve_relevant_passages(backstory_text, top_k=30)
-    
-    # If character name provided, also retrieve character-specific passages
-    if character_name:
-        char_passages = pathway_processor.retrieve_by_character(character_name, top_k=50)
-        # Combine and deduplicate
-        all_passages = list(set(relevant_passages + char_passages))
-    else:
-        all_passages = relevant_passages
-    
-    # Use retrieved passages for analysis (or fall back to chunks if empty)
-    if all_passages:
-        analysis_text = '\n'.join(all_passages)
-    else:
-        analysis_text = novel_text[:100000]  # Fallback
-    
-    # Chunk for experience detection
+    # 1. Chunking
     chunker = NarrativeChunker()
-    chunks = chunker.chunk_novel(analysis_text)
+    chunks = chunker.chunk_novel(novel_text)
     
-    # Detect experiences
+    # Filter by character name
+    if character_name:
+        chunks = [c for c in chunks if character_name.lower() in c.lower()]
+    
+    # 2. Experience Detection
     detector = ExperienceDetector()
     experiences = detector.detect_experiences(chunks)
     
-    # Evolve character constraints from story
+    # 3. Update Character State
     updater = ConstraintUpdater()
-    character_state = CharacterState({}, [])
+    story_state = CharacterState({}, [])
     for exp in experiences:
-        character_state = updater.update_state(exp, character_state)
+        story_state = updater.update_state(exp, story_state)
     
-    # Parse backstory
+    # 4. Parse Backstory
     parser = BackstoryParser()
     backstory_state = parser.parse_backstory(backstory_text)
     
-    # Compare constraints
+    # 5. Compare Constraints
     comparator = ConstraintComparator()
-    constraint_result = comparator.compare(character_state, backstory_state)
-    
-    # Use hybrid analyzer (constraint + LLM)
-    hybrid = HybridAnalyzer(use_llm=True)
-    final_result = hybrid.analyze(
-        constraint_result=constraint_result,
-        backstory=backstory_text,
-        evidence_passages=all_passages[:5],  # Send top 5 passages (optimized)
-        character_name=character_name or ""
+    dataset_result = comparator.compare(
+        story_state, 
+        backstory_state,
+        threshold=EVIDENCE_DOMINANCE_THRESHOLD
     )
     
     return {
-        "prediction": final_result['prediction'],
-        "rationale": final_result['rationale']
+        'prediction': dataset_result['prediction'],
+        'rationale': _format_rationale(dataset_result)
     }
+
+
+def _format_rationale(result):
+    if result['prediction'] == 1:
+        return "No meaningful conflicts. All constraint polarities align."
+    
+    conflicts = result['conflicts']
+    if not conflicts:
+        return "No conflicts detected."
+        
+    dims = [c['dimension'] for c in conflicts]
+    return f"Conflict in [{', '.join(dims)}]"
 
 
 def main():

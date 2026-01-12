@@ -10,7 +10,7 @@ class ConstraintComparator:
     def __init__(self):
         pass
 
-    def compare(self, story_state: CharacterState, backstory_state: CharacterState) -> Dict:
+    def compare(self, story_state: CharacterState, backstory_state: CharacterState, threshold: float = 0.5) -> Dict:
         """
         Compares constraints and returns a decision with conflicts and explanation.
         """
@@ -25,7 +25,7 @@ class ConstraintComparator:
                 if story_con.polarity != back_con.polarity:
                     # Calculate severity
                     max_strength = max(story_con.strength, back_con.strength)
-                    if max_strength >= 0.5:
+                    if max_strength >= threshold:
                         severity = "high"
                     else:
                         severity = "medium"
